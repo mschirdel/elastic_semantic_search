@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.3
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: debug-statements
+      - id: requirements-txt-fixer
+      - id: flake8
+        args:
+        - --max-line-length=110
+        - --ignore=E402,F841,F401,E302,E305,W503,E203,C901,E741
+  - repo: local
+    hooks:
+      - id: isort
+        name: "Sort imports"
+        language: system
+        types: [file, python]
+        entry: isort
+        args: ["--profile", "black", "--filter-files"]
+      - id: black
+        name: "Black"
+        language: system
+        pass_filenames: false
+        entry: black .
+        args: [--safe, --quiet, "--line-length=110", "--skip-string-normalization",'--config=pyproject.toml']
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.2.0
+    hooks:
+    -   id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']

@@ -1,0 +1,32 @@
+[tool.poetry]
+name = 'elastic_semantic_search'
+version = "0.1.0"
+description = 'This is a poc for semantic search with elasticsearch. '
+authors = ['mahdy shirdel']
+license = 'MIT'
+
+[tool.poetry.dependencies]
+python = '3.9.4'
+python-dotenv = "0.5.1"
+pandas = "^2.0.2"
+transformers = "^4.30.2"
+sentence-transformers = "^2.2.2"
+torch = "^2.0.1"
+elasticsearch = "^8.8.0"
+datasets = "^2.13.0"
+faiss-cpu = "^1.7.4"
+langchain = "^0.0.208"
+
+[tool.poetry.dev-dependencies]
+click = "^8.0.1" 
+sphinx-pyreverse = "^0.0.16"
+coverage = "^5.5"
+awscli = "^1.19.94"
+flake8 = "^3.9.2"
+black = "^21.6b0"
+pre-commit = "^2.13.0"
+jupyterlab = "^4.0.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
