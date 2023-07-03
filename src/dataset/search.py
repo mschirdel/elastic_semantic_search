@@ -17,21 +17,16 @@ readline.parse_and_bind("tab: complete")
 # Instantiate the logger
 logger = getLogger(__name__)
 
-def perform_search(query: str,
-                   client: Elasticsearch,
-                   index_name: str,
-                   model=SentenceTransformer(constants.MAIN_EMBEDDING)):
+
+def perform_search(
+    query: str, client: Elasticsearch, index_name: str, model=SentenceTransformer(constants.MAIN_EMBEDDING)
+):
     # Perform transformations on the input query
     # Example transformation: Convert query to uppercase
     query_emb = model.encode(query)
 
     res = client.search(
-        knn={
-            "field": "sentence_embedding",
-            "query_vector": query_emb,
-            "k": 5,
-            "num_candidates": 5
-        },
+        knn={"field": "sentence_embedding", "query_vector": query_emb, "k": 5, "num_candidates": 5},
         index=index_name,
     )
 
@@ -42,15 +37,17 @@ def perform_search(query: str,
         f'Result 2: {res["hits"]["hits"][1]["_source"]["sentence_text"]}',
         'score: {res["hits"]["hits"][1]["_score"]}',
         f'Result 3: {res["hits"]["hits"][2]["_source"]["sentence_text"]}',
-        'score: {res["hits"]["hits"][2]["_score"]}'
+        'score: {res["hits"]["hits"][2]["_score"]}',
     ]
 
     # Return the results
     return results
 
+
 def clear_screen():
     # Clear the terminal screen
     os.system('cls' if os.name == 'nt' else 'clear')
+
 
 if __name__ == "__main__":
 
@@ -82,7 +79,7 @@ if __name__ == "__main__":
     client = Elasticsearch(
         hosts=constants.ES_URL,
         ca_certs=constants.ES_CA_CERTS,
-        basic_auth=(constants.ES_USER, constants.ES_PASSWORD)
+        basic_auth=(constants.ES_USER, constants.ES_PASSWORD),
     )
     # Get cluster information
     logger.info(client.info())

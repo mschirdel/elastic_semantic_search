@@ -13,10 +13,13 @@ from src.utils.logging import getLogger
 # Instantiate the logger
 logger = getLogger(__name__)
 
-def local_text_embedding(client: Elasticsearch,
-                         index_name: str,
-                         data_path: str,
-                         model: SentenceTransformer = SentenceTransformer(constants.MAIN_EMBEDDING)):
+
+def local_text_embedding(
+    client: Elasticsearch,
+    index_name: str,
+    data_path: str,
+    model: SentenceTransformer = SentenceTransformer(constants.MAIN_EMBEDDING),
+):
     """Read text files and embed them in the ES.
 
     Args:
@@ -34,10 +37,11 @@ def local_text_embedding(client: Elasticsearch,
                 content = file.read()
                 # Parse the file content here
                 logger.debug(f"Embedding {filename}:")
-                doc = {"sentence_text": content,
-                       "document_name": f"Document {i}",
-                       "sentence_embedding": model.encode(content)
-                       }
+                doc = {
+                    "sentence_text": content,
+                    "document_name": f"Document {i}",
+                    "sentence_embedding": model.encode(content),
+                }
 
                 client.index(index=index_name, document=doc)
 
@@ -73,7 +77,7 @@ if __name__ == "__main__":
     client = Elasticsearch(
         hosts=constants.ES_URL,
         ca_certs=constants.ES_CA_CERTS,
-        basic_auth=(constants.ES_USER, constants.ES_PASSWORD)
+        basic_auth=(constants.ES_USER, constants.ES_PASSWORD),
     )
     # Get cluster information
     logger.info(client.info())

@@ -1,4 +1,3 @@
-
 import argparse
 import textwrap
 
@@ -42,7 +41,7 @@ if __name__ == "__main__":
     client = Elasticsearch(
         hosts=constants.ES_URL,
         ca_certs=constants.ES_CA_CERTS,
-        basic_auth=(constants.ES_USER, constants.ES_PASSWORD)
+        basic_auth=(constants.ES_USER, constants.ES_PASSWORD),
     )
     # get cluster information
     logger.info(client.info())
@@ -51,24 +50,9 @@ if __name__ == "__main__":
     settings = {"number_of_shards": 2, "number_of_replicas": 1}
     mappings = {
         "properties": {
-            "sentence_embedding": {
-                "type": "dense_vector",
-                "dims": 12,
-                "index": 12,
-                "similarity": "cosine"
-            },
-            "sentence_text": {
-                "type": "text",
-                "fields": {"keyword": {"type": "text"}}
-            },
-            "document_name": {
-                "type": "text",
-                "fields": {
-                    "keyword": {
-                        "type": "text"
-                    }
-                }
-            }
+            "sentence_embedding": {"type": "dense_vector", "dims": 12, "index": 12, "similarity": "cosine"},
+            "sentence_text": {"type": "text", "fields": {"keyword": {"type": "text"}}},
+            "document_name": {"type": "text", "fields": {"keyword": {"type": "text"}}},
         }
     }
 
