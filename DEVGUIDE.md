@@ -1,9 +1,9 @@
 
 ## Prerequisites
 
-- Python 3.9.4 
+- Python 3.9.4
 - ElasticSearch cluster
-- Huggingface hub 
+- Huggingface hub
 
 
 ### Python Environment Setup
@@ -51,19 +51,19 @@ $pre-commit install
 
 First you activate the local python version at the root of your project, then make an env using that python version then activate the virtualenv and after that install the `.lock` file if it exists or `poetry add` if you are building the project from scratch. Maker sure to mark the dev dependencies as `add -D`.
 
-Note, make sure to install the `pre-commit` to enforce the hooks prior commiting your new codes. Othrerwise, the code will not be checked for the agreed upong code styles. 
+Note, make sure to install the `pre-commit` to enforce the hooks prior commiting your new codes. Othrerwise, the code will not be checked for the agreed upong code styles.
 
 
-### Elasticsearch Cluster Setup 
+### Elasticsearch Cluster Setup
 ----
-There are different ways of setting up the Elasticsearch cluster. This [link](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html) provides a thorough explanations of the required steps. If you are also interested to install Kibana, a visualization tool, alongside the elasticsearch stack you can follow this [link](https://www.elastic.co/guide/en/kibana/8.8/docker.html) that provides information about installing Kibana. 
+There are different ways of setting up the Elasticsearch cluster. This [link](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html) provides a thorough explanations of the required steps. If you are also interested to install Kibana, a visualization tool, alongside the elasticsearch stack you can follow this [link](https://www.elastic.co/guide/en/kibana/8.8/docker.html) that provides information about installing Kibana.
 All the steps for setting up elasticsearch and kibana stack have also been provided as a docker installation file, `docker-compose.yml` in our project root. This yaml file contains all the cert steps and setups for a single node cluster. To get our cluster up and running we do the following items:
 1. Create a `.env` file with the following information in it
 
-     
+
         # Password for the 'elastic' user (at least 6 characters)
-        ES_PASSWORD=
-        ES_USER=elastic
+        ELASTIC_PASSWORD=
+        ELASTIC_USER=elastic
 
         # Password for the 'kibana_system' user (at least 6 characters)
         KIBANA_PASSWORD=
@@ -88,18 +88,18 @@ All the steps for setting up elasticsearch and kibana stack have also been provi
         # Increase or decrease based on the available host memory (in bytes)
         MEM_LIMIT=1073741824
 
-       
-2. Run docker-compose command 
+
+2. Run docker-compose command
 
         docker-compose up -d
 
 
-3. Get a copy of cert in somewhere local to use for the ES clients access 
+3. Get a copy of cert in somewhere local to use for the ES clients access
 
-        docker cp elastic_semantic_search_es01_1:/usr/share/elasticsearch/config/certs/ca/ca.crt ~/.creds 
-        
+        docker cp elastic_semantic_search_es01_1:/usr/share/elasticsearch/config/certs/ca/ca.crt ~/.creds
 
-Going forward, we can use the `~/.creds/ca.crt` as our cert file in our elasticsearch client side. 
+
+Going forward, we can use the `~/.creds/ca.crt` as our cert file in our elasticsearch client side.
 
 
 ### Commit Messages

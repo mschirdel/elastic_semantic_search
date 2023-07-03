@@ -1,0 +1,174 @@
+version: 1
+
+# Formatters change the way log messages look when they are emitted.
+#
+# Formatters are only used by Handlers.  You only need to change a Formatter
+# if you want to customize the style of strings logged to each Handler target.
+#
+# The %(...) attributes are described here:
+#   https://docs.python.org/3.5/library/logging.html#logrecord-attributes
+#
+# The "datefmt" uses time.strftime(), which is documented here:
+#   https://docs.python.org/3.8/library/time.html#time.strftime
+#
+# Feel free to change these formats as needed.
+#
+# Formatter Descriptions
+#  - "default" : This is the usual style.
+#
+#  - "color" : This is a nicety -- not strictly needed -- but it does allow
+#              you to print log messages to an ANSI terminal in 16 colors.
+#
+#              "()" is a special key used by python.logging to allow the use
+#              of custom classes.  We use it here so that the third-party
+#              colorlog.ColoredFormatter class can emit ANSI color escape
+#              sequences.
+#
+#              The additional ColoredFormatter-specific %(...) attributes are
+#              described here:
+#
+#                https://github.com/borntyping/python-colorlog#usage
+
+formatters:
+
+  "default":
+    format: "%(levelname)-8s | %(asctime)s | PID=%(process)d | %(filename)s:%(lineno)s [%(name)s]: %(message)s"
+
+  "color":
+    (): "colorlog.ColoredFormatter"
+    #format: "%(log_color)s%(levelname)-8s%(reset)s | %(purple)s%(asctime)s%(reset)s | PID=%(process)d | %(blue)s%(filename)s:%(lineno)s%(reset)s [%(bold)s%(name)s%(reset)s]: %(log_color)s%(message)s%(reset)s"
+    format: "%(log_color)s%(levelname)-8s%(reset)s | %(purple)s%(asctime)s%(reset)s | PID=%(process)d |[%(bold)s%(name)s%(reset)s]: %(log_color)s%(message)s%(reset)s"
+    datefmt: "%Y-%m-%d %H:%M:%S %Z"
+
+# Handlers say where the log messages go.
+#
+# Handler Descriptions
+# - "console" : This is the usual Handler -- it directs its output to standard
+#               error.
+#
+# - "console-color" : This Handler prints pretty ANSI colors to stderr.
+#
+# - "logfile" : This Handler writes rotating log files into the logs
+#               directory.  This allows us to capture all of the logs coming
+#               from the pipeline code.  Since our processes are mostly
+#               data-bound, the performance of the log writes will not matter
+#               except in deeply-nested inner loops.
+#
+#               "logfile" params:
+#
+#               - class : "logging.handlers.RotatingFileHandler" is the
+#                         builtin python.logging Handler for rotating logs.
+#                         It does not need to change.
+#               - filename : This path needs to be relative to the location of log_util.py.
+#
+#               - maxBytes : The maximum number of bytes a log file can have
+#                            before rolling over to another log file.
+#               - backupCount : The maximum number of rollovers we have. When
+#                               this number is exceeded, the oldest logfile
+#                               will be overwritten.
+#               - formatter : The name of the Formatter that controls which
+#                             string is logged. The "default" Formatter is
+#                             fine for most purposes.
+#
+# - "silent" : A Handler that logs nothing.  Use this if you need to
+#              temporarily disable an existing Logger.
+handlers:
+  "silent":
+    class: "logging.NullHandler"
+    formatter: "default"
+
+  "console":
+    class: "logging.StreamHandler"
+    formatter: "default"
+    stream: "ext://sys.stderr"
+
+  "console-color":
+    class: "logging.StreamHandler"
+    formatter: "color"
+    stream: "ext://sys.stderr"
+
+  "logfile":
+    class: "logging.handlers.RotatingFileHandler"
+    filename: "../../logs/ds.log"
+    maxBytes: 10485760
+    backupCount: 5
+    formatter: default
+
+  # "law_local_logfile":
+  #   class: "logging.handlers.RotatingFileHandler"
+  #   filename: "../../logs/ds.log"
+  #   maxBytes: 10485760
+  #   backupCount: 5
+  #   formatter: default
+
+  # "logfileLawrenceVM":
+  #   class: "logging.handlers.RotatingFileHandler"
+  #   filename: "../../logs/ds.log"
+  #   maxBytes: 10485760
+  #   backupCount: 5
+  #   formatter: default
+
+# Loggers allow fine-tuning of logging in individual modules.  We generally
+# name loggers in our code by module:
+#
+#   logger = src.integration.log_util.getLogger(__name__)
+#
+# - levels: Tags used for filtering logging statements.
+#
+#           The levels exist in an ordered hierarchy of their own.  The DEBUG
+#           level exposes all logging statements, whereas the INFO level (for
+#           instance) will only expose logger.info(), logger.warn(),
+#           logger.error(), and logger.critical() messages.
+#
+#           DEBUG
+#             \
+#            INFO
+#              \
+#             WARN
+#               \
+#              ERROR
+#                \
+#               CRITICAL
+#
+# - handlers : A Logger can have one or more Handler targets.  Using an empty
+#              list here will suppress the Logger.
+loggers:
+  "filelock": { level: "WARNING" }
+  "matplotlib": { level: "WARNING" }
+  "awswrangler": { level: "WARNING" }
+  "graphviz": { level: "WARNING" }
+  "urllib3": { level: "ERROR" }
+  "tensorflow": { level: "WARNING" }
+  "yaml": { level: "WARNING" }
+  "git": { level: "WARNING" }
+  "fsevents" : {level: "WARNING"}
+  "LogConfigFileWatcher": { level: "WARNING" }
+  "botocore" : {level: "WARNING"}
+  "watchdog" : {level: "WARNING"}
+  "s3transfer" : {level: "WARNING"}
+  "snowflake" : {level: "WARNING"}
+
+# Root is the parent of all Loggers.  All loggers inherit from the root
+# logger, with the exception of properties from child Loggers defined above.
+#
+# NOTE: In order to suppress the root Logger while leaving your custom Loggers
+#       alone, it is not sufficient to give it an empty handler list (this
+#       will actually cause the root Logger to revert to a default format
+#       string.)  Instead, change its list of handlers to ["silent"].
+#
+
+
+root:
+  level: "DEBUG"
+  handlers: ["console-color", "logfile"]
+
+# Loading our configuration should not cause loggers that exist and were set
+# up before our watchdog thread ran to be disabled.  Yet that is the default
+# behavior of the logging module!
+#
+# Setting this to false was critical to getting the src DS logging code
+# working, and it's a good idea to set in general.
+disable_existing_loggers: false
+
+
+profiling: true
