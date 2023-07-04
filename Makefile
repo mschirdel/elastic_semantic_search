@@ -1,4 +1,4 @@
-.PHONY: clean run_precommit
+.PHONY: clean run_precommit copy_cert index embedding search
 
 PWD := $(shell pwd)
 INDEX_NAME="test-0"
@@ -27,10 +27,13 @@ index:
 				--index_name $(INDEX_NAME) \
 				--embedding_dims $(EMBEDDING_DIMS)
 
+# Make document embedding in elasticsearch
 embedding:
 	PYTHONPATH="." poetry run python ./src/dataset/embeddings.py \
 				--index_name $(INDEX_NAME) \
 				--data_path $(DATA_PATH)
+
+# Run search from elasticsearch
 search:
 	PYTHONPATH="." poetry run python ./src/dataset/search.py \
 				--index_name $(INDEX_NAME)
