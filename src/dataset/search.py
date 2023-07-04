@@ -59,13 +59,12 @@ if __name__ == "__main__":
             ''''
         Current arguments are:
 
-        --data_path="/data/sample_data"
         --index_name="es0"
 
         Example Usage
         -------------
         python %(prog)s
-        python %(prog)s --data_path=/data/sample_data --index_name=es0
+        python %(prog)s  --index_name=es0
 
         '''
         ),
