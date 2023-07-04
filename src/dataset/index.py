@@ -50,7 +50,12 @@ if __name__ == "__main__":
     settings = {"number_of_shards": 2, "number_of_replicas": 1}
     mappings = {
         "properties": {
-            "sentence_embedding": {"type": "dense_vector", "dims": 12, "index": 12, "similarity": "cosine"},
+            "sentence_embedding": {
+                "type": "dense_vector",
+                "dims": args.embedding_dims,
+                "index": True,
+                "similarity": "cosine",
+            },
             "sentence_text": {"type": "text", "fields": {"keyword": {"type": "text"}}},
             "document_name": {"type": "text", "fields": {"keyword": {"type": "text"}}},
         }

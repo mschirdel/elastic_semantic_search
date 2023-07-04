@@ -25,6 +25,7 @@ def perform_search(
     # Example transformation: Convert query to uppercase
     query_emb = model.encode(query)
 
+    # results = query
     res = client.search(
         knn={"field": "sentence_embedding", "query_vector": query_emb, "k": 5, "num_candidates": 5},
         index=index_name,
@@ -33,11 +34,11 @@ def perform_search(
     # Generate results based on the search query
     results = [
         f'Result 1: {res["hits"]["hits"][0]["_source"]["sentence_text"]}',
-        'score: {res["hits"]["hits"][0]["_score"]}',
+        f'score: {res["hits"]["hits"][0]["_score"]}',
         f'Result 2: {res["hits"]["hits"][1]["_source"]["sentence_text"]}',
-        'score: {res["hits"]["hits"][1]["_score"]}',
+        f'score: {res["hits"]["hits"][1]["_score"]}',
         f'Result 3: {res["hits"]["hits"][2]["_source"]["sentence_text"]}',
-        'score: {res["hits"]["hits"][2]["_score"]}',
+        f'score: {res["hits"]["hits"][2]["_score"]}',
     ]
 
     # Return the results
